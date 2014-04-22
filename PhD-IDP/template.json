@@ -1,0 +1,66 @@
+{
+    "clustering": {
+        "generation": {
+            "method": "generate"
+        },
+        "algorithms": {
+            "kmedoids": {
+		        "tries":4,
+                "max": 25
+            },
+            "hierarchical": {},
+            "dbscan": {},
+            "gromos": {
+                "max": 25
+            }
+        },
+        "evaluation": {
+            "minimum_cluster_size": 40,
+            "maximum_noise": 10,
+            "evaluation_criteria": {
+                "criteria_0": {
+                    "CythonSilhouette": {
+                        "action": ">",
+                        "weight": 3
+                    },
+                    "CythonMirrorCohesion": {
+                        "action": ">",
+                        "weight": 2
+                    }
+                }
+            },
+            "query_types": [
+                "NumClusters",
+                "NoiseLevel",
+                "MeanClusterSize"
+            ],
+            "maximum_clusters": 200,
+            "minimum_clusters": 50
+        }
+    },
+    "global": {
+        "control": {
+            "scheduler_type": "Process/Parallel",
+            "number_of_processes": 7
+        },
+        "workspace": {
+            "base": "/home/victor/Escritorio/RamonCrehuet/Comparisons/Campari1vs7/Clustering"
+        }
+    },
+    "data": {
+        "files": [
+        ],
+        "type": "pdb_ensemble",
+        "matrix": {
+            "method": "rmsd",
+            "parameters": {
+                "calculator_type": "QCP_OMP_CALCULATOR",
+                "fit_selection": "name CA"
+            }
+        }
+    },
+    "postprocess": {
+        "rmsf": {},
+        "conformational_space_comparison": {}
+    }
+}
