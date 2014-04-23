@@ -4,7 +4,10 @@ Created on 22/04/2014
 @author: victor
 '''
 import os
-from tools import create_dir
+from tools import create_dir, save_dic_in_json
+import copy
+
+PYPROCT = "/home/victor/workspaces/Python/pyProClust/pyproct/main.py"
 
 campari_trajs = [
                  "trajectories/campari/N_000_.pdb",
@@ -44,6 +47,71 @@ profasi_trajs = [
                  "trajectories/profasi/t15_fixed.pdb"
                  ]
 
+script_template = {
+    "clustering": {
+        "generation": {
+            "method": "generate"
+        },
+        "evaluation": {
+            "maximum_noise": 10,
+            "evaluation_criteria": {
+                "criteria_0": {
+                    "CythonSilhouette": {
+                        "action": ">",
+                        "weight": 3
+                    },
+                    "CythonMirrorCohesion": {
+                        "action": ">",
+                        "weight": 2
+                    }
+                }
+            },
+            "minimum_cluster_size": 20,
+            "query_types": [
+                "NumClusters",
+                "NoiseLevel",
+                "MeanClusterSize"
+            ],
+            "maximum_clusters": 200,
+            "minimum_clusters": 3
+        },
+        "algorithms": {
+            "kmedoids": {
+                "max": 25,
+                "tries": 5
+            },
+            "hierarchical": {},
+            "dbscan": {},
+            "gromos": {
+                "max": 25
+            }
+        }
+    },
+    "global": {
+        "control": {
+            "number_of_processes": 7,
+            "scheduler_type": "Process/Parallel"
+        },
+        "workspace": {
+            "base": ""
+        }
+    },
+    "data": {
+        "files": [
+        ],
+        "type": "pdb_ensemble",
+        "matrix": {
+            "method": "rmsd",
+            "parameters": {
+                "calculator_type": "QCP_OMP_CALCULATOR",
+                "fit_selection": "name CA"
+            }
+        }
+    },
+    "postprocess": {
+    }
+}
+
 def extract_first_n_frames(n, in_trajectory, out_trajectory):
     traj_handler = open(in_trajectory)
     out_traj_handler= open(out_trajectory,"w")
@@ -57,26 +125,32 @@ def extract_first_n_frames(n, in_trajectory, out_trajectory):
 
         if num_models == n:
             break
-    print num_models
     traj_handler.close()
     out_traj_handler.close()
 
-def do_chunks_of_trajs(traj_set):
-    for traj in traj_set:
-        path, file_name = os.path.split(traj)
-        traj_id = file_name.split(".")[0]
-        create_dir("chunks/campari/%s"%traj_id)
-        for n in range(1000,10000,1000):
-            extract_first_n_frames(n, traj, "./chunks/campari/%s/%d.pdb"%(traj_id,n))
-            #print n, traj, "chunks/campari/%d.pdb"%n
+def do_convergence_test(trajectory):
+    path, file_name = os.path.split(trajectory)
+    traj_id = file_name.split(".")[0]
+    base_path = os.path.join("convergence","campari","%s"%traj_id)
+    for n in range(1000,10000,1000):
+        print "- Working with %s with %d frames"%(trajectory,n)
+        this_path = os.path.join(base_path, "%d"%n)
+        create_dir(this_path)
+        pdb_path = os.path.join(this_path,"%d.pdb"%n)
+        extract_first_n_frames(n, traj, pdb_path)
+        script = copy.deepcopy(script_template)
+        script["global"]["workspace"]["base"] = this_path
+        script["data"]["files"] = [pdb_path]
+        script_path = os.path.join(this_path,"script.json")
+        save_dic_in_json(script, script_path)
+        os.system("python %s %s "%(PYPROCT, script_path))
+        os.system("rm %s"%pdb_path)
 
-create_dir("chunks")
+for traj in campari_trajs:
+    do_convergence_test(traj)
 
-create_dir("chunks/campari")
-create_dir("chunks/profasi")
-
-do_chunks_of_trajs(campari_trajs)
-do_chunks_of_trajs(profasi_trajs)
+for traj in profasi_trajs:
+    do_convergence_test(traj)
 
 
 
