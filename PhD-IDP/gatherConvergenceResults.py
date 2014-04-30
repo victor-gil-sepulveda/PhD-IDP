@@ -5,6 +5,7 @@ Created on 23/04/2014
 '''
 from tools import load_dic_in_json
 import os
+import matplotlib.pyplot as plt
 
 subfolders = ["1000","2000","3000","4000","5000","6000","7000","8000","9000"]
 
@@ -45,12 +46,40 @@ profasi_folders = [
                  "convergence/profasi/t14_fixed",
                  "convergence/profasi/t15_fixed"
                  ]
-def process_folders(this_folders):
+
+def process_results(this_folders):
     for folder in this_folders:
+        subfolder_results = []
         for subfolder in subfolders:
             results_file = os.path.join(folder, subfolder, "results", "results.json")
             if os.path.exists(results_file):
                 results = load_dic_in_json(results_file)
-                print results_file, results["selected"][results["best_clustering"]]["clustering"]["number_of_clusters"]
+                print results_file, results["selected"][results["best_clustering"]]["clustering"]["number_of_clusters"],\
+                results["selected"][results["best_clustering"]]["evaluation"]["Noise level"]
+                subfolder_results.append(results["selected"][results["best_clustering"]]["clustering"]["number_of_clusters"])
+            else:
+                subfolder_results.append(0.)
+        plt.plot(range(len(subfolders)), subfolder_results, linewidth=2)
+    plt.show()
 
-process_folders(campari_folders)
+def process_matrix_stats(this_folders):
+    mean = []
+    stddev = []
+    for folder in this_folders:
+        subfolder = "9000"
+        matrix_stats_file = os.path.join(folder, subfolder, "matrix", "statistics.json")
+        if os.path.exists(matrix_stats_file):
+            stats = load_dic_in_json(matrix_stats_file)
+            mean.append(stats["Mean"])
+            stddev.append(stats["Std. Dev."])
+        else:
+            mean.append(0)
+            stddev.append(0)
+        plt.errorbar(range(len(mean)), mean, yerr = stddev, linewidth=2)
+    plt.show()
+
+process_results(campari_folders)
+
+process_matrix_stats(campari_folders)
+
+# process_folders(profasi_folders)
