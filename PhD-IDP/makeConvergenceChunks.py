@@ -66,25 +66,25 @@ script_template = {
                     }
                 }
             },
-            "minimum_cluster_size": 100,
+            "minimum_cluster_size": 15,
             "query_types": [
                 "NumClusters",
                 "NoiseLevel",
                 "MeanClusterSize"
             ],
             "maximum_clusters": 200,
-            "minimum_clusters": 6
+            "minimum_clusters": 30
         },
         "algorithms": {
             "kmedoids": {
-                "max": 25,
+                "max": 50,
                 "seeding_type": "RANDOM",
-                "tries": 5
+                "tries": 3
             },
             "hierarchical": {},
             "dbscan": {},
             "gromos": {
-                "max": 25
+                "max": 50
             }
         }
     },
@@ -113,7 +113,7 @@ script_template = {
         }
     },
     "postprocess": {
-        "representatives":{}
+       # "representatives":{}
     }
 }
 
@@ -147,10 +147,10 @@ def do_convergence_test(trajectory, traj_type):
         script = copy.deepcopy(script_template)
         script["global"]["workspace"]["base"] = this_path
         script["data"]["files"] = [pdb_path]
-        script["clustering"]["evaluation"]["maximum_noise"] = trajectory["noise"]
-        script["clustering"]["evaluation"]["minimum_cluster_size"] = int(n/trajectory["max"])
-        script["clustering"]["evaluation"]["minimum_clusters"] = trajectory["min"]
-        script["clustering"]["evaluation"]["maximum_clusters"] = trajectory["max"]
+#         script["clustering"]["evaluation"]["maximum_noise"] = trajectory["noise"]
+#         script["clustering"]["evaluation"]["minimum_cluster_size"] = int(n/trajectory["max"])
+#         script["clustering"]["evaluation"]["minimum_clusters"] = trajectory["min"]
+#         script["clustering"]["evaluation"]["maximum_clusters"] = trajectory["max"]
         script_path = os.path.join(this_path,"script.json")
         save_dic_in_json(script, script_path)
         os.system("python %s %s "%(PYPROCT, script_path))

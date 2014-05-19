@@ -52,43 +52,64 @@ PYPROCT = "/home/victor/workspaces/Python/pyProClust/pyproct/main.py"
 
 initial_i_offset,initial_j_offset = 9, (13-9) # To start aborted runs
 
-# Campari
-for i in range(initial_i_offset,len(campari_trajs)-1):
-    A_traj = campari_trajs[i]
-    path, file = os.path.split(A_traj)
-    A_traj_id = file.split(".")[0]
-    for j in range(i+1+initial_j_offset,len(campari_trajs)):
-        B_traj = campari_trajs[j]
-        path, file = os.path.split(B_traj)
-        B_traj_id = file.split(".")[0]
-        script = copy.deepcopy(script_template)
-        working_dir = os.path.join("comparisons","campari","%svs%s"%(A_traj_id,B_traj_id))
-        create_dir(working_dir)
-        script["global"]["workspace"]["base"] = working_dir
-        script["data"]["files"] = [A_traj, B_traj]
-        script_path = os.path.join(working_dir,"script.json")
-        save_dic_in_json(script, script_path)
-        os.system("python %s %s "%(PYPROCT, script_path))
-        initial_j_offset = 0
-    initial_i_offset = 0
+# # Campari
+# for i in range(initial_i_offset,len(campari_trajs)-1):
+#     A_traj = campari_trajs[i]
+#     path, file = os.path.split(A_traj)
+#     A_traj_id = file.split(".")[0]
+#     for j in range(i+1+initial_j_offset,len(campari_trajs)):
+#         B_traj = campari_trajs[j]
+#         path, file = os.path.split(B_traj)
+#         B_traj_id = file.split(".")[0]
+#         script = copy.deepcopy(script_template)
+#         working_dir = os.path.join("comparisons","campari","%svs%s"%(A_traj_id,B_traj_id))
+#         create_dir(working_dir)
+#         script["global"]["workspace"]["base"] = working_dir
+#         script["data"]["files"] = [A_traj, B_traj]
+#         script_path = os.path.join(working_dir,"script.json")
+#         save_dic_in_json(script, script_path)
+#         os.system("python %s %s "%(PYPROCT, script_path))
+#         initial_j_offset = 0
+#     initial_i_offset = 0
+#
+# # Profasi (copy-paste!)
+# initial_i_offset,initial_j_offset = 0, 0
+# for i in range(initial_i_offset,len(profasi_trajs)-1):
+#     A_traj = profasi_trajs[i]
+#     path, file = os.path.split(A_traj)
+#     A_traj_id = file.split(".")[0]
+#     for j in range(i+1+initial_j_offset,len(profasi_trajs)):
+#         B_traj = profasi_trajs[j]
+#         path, file = os.path.split(B_traj)
+#         B_traj_id = file.split(".")[0]
+#         script = copy.deepcopy(script_template)
+#         working_dir = os.path.join("comparisons","profasi","%svs%s"%(A_traj_id,B_traj_id))
+#         create_dir(working_dir)
+#         script["global"]["workspace"]["base"] = working_dir
+#         script["data"]["files"] = [A_traj, B_traj]
+#         script_path = os.path.join(working_dir,"script.json")
+#         save_dic_in_json(script, script_path)
+#         os.system("python %s %s "%(PYPROCT, script_path))
+#         initial_j_offset = 0
+#     initial_i_offset = 0
 
-# Profasi (copy-paste!)
-initial_i_offset,initial_j_offset = 0, 0
-for i in range(initial_i_offset,len(profasi_trajs)-1):
-    A_traj = profasi_trajs[i]
-    path, file = os.path.split(A_traj)
-    A_traj_id = file.split(".")[0]
-    for j in range(i+1+initial_j_offset,len(profasi_trajs)):
-        B_traj = profasi_trajs[j]
+# Campari vs Profasi
+for i in range(0,len(profasi_trajs)):
+    if not i in [9,10]:
+        A_traj = campari_trajs[i]
+        path, file = os.path.split(A_traj)
+        A_traj_id = file.split(".")[0]
+
+        B_traj = profasi_trajs[i]
         path, file = os.path.split(B_traj)
         B_traj_id = file.split(".")[0]
+
         script = copy.deepcopy(script_template)
-        working_dir = os.path.join("comparisons","profasi","%svs%s"%(A_traj_id,B_traj_id))
+        working_dir = os.path.join("comparisons","campari_vs_profasi","%svs%s"%(A_traj_id,B_traj_id))
         create_dir(working_dir)
         script["global"]["workspace"]["base"] = working_dir
-        script["data"]["files"] = [A_traj, B_traj]
+        script["data"]["files"] = [{"file":A_traj,"base_selection":"resnum 3to53"},{"file": B_traj,"base_selection":"resnum 3to53"}]
         script_path = os.path.join(working_dir,"script.json")
         save_dic_in_json(script, script_path)
         os.system("python %s %s "%(PYPROCT, script_path))
-        initial_j_offset = 0
-    initial_i_offset = 0
+

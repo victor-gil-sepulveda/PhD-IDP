@@ -48,6 +48,9 @@ profasi_folders = [
                  ]
 
 def process_results(this_folders):
+    results_matrix = {}
+    #fig = plt.figure(figsize=(18, 18))
+    # Plot by temperature
     for folder in this_folders:
         subfolder_results = []
         for subfolder in subfolders:
@@ -59,7 +62,18 @@ def process_results(this_folders):
                 subfolder_results.append(results["selected"][results["best_clustering"]]["clustering"]["number_of_clusters"])
             else:
                 subfolder_results.append(0.)
-        plt.plot(range(len(subfolders)), subfolder_results, linewidth=2)
+        results_matrix[folder] = subfolder_results
+        plt.plot(range(len(subfolders)), subfolder_results, linewidth=2, label = folder.split("/")[2])
+    plt.legend(loc=2,prop={'size':6})
+    plt.show()
+
+    ## Now plot by trajectory length
+    for i in range(len(subfolders)):
+        plot_by_size = []
+        for folder in this_folders:
+            plot_by_size.append(results_matrix[folder][i])
+        plt.plot(range(len(this_folders)), plot_by_size, linewidth=2,label = subfolders[i])
+    plt.legend(prop={'size':6})
     plt.show()
 
 def process_matrix_stats(this_folders):
