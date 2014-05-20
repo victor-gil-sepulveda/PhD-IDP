@@ -94,22 +94,22 @@ initial_i_offset,initial_j_offset = 9, (13-9) # To start aborted runs
 #     initial_i_offset = 0
 
 # Campari vs Profasi
-for i in range(0,len(profasi_trajs)):
-    if not i in [9,10]:
-        A_traj = campari_trajs[i]
-        path, file = os.path.split(A_traj)
-        A_traj_id = file.split(".")[0]
+for i in [15]: #range(0,len(profasi_trajs)):
+    A_traj = campari_trajs[i]
+    path, file = os.path.split(A_traj)
+    A_traj_id = file.split(".")[0]
 
-        B_traj = profasi_trajs[i]
-        path, file = os.path.split(B_traj)
-        B_traj_id = file.split(".")[0]
+    B_traj = profasi_trajs[i]
+    path, file = os.path.split(B_traj)
+    B_traj_id = file.split(".")[0]
 
-        script = copy.deepcopy(script_template)
-        working_dir = os.path.join("comparisons","campari_vs_profasi","%svs%s"%(A_traj_id,B_traj_id))
-        create_dir(working_dir)
-        script["global"]["workspace"]["base"] = working_dir
-        script["data"]["files"] = [{"file":A_traj,"base_selection":"resnum 3to53"},{"file": B_traj,"base_selection":"resnum 3to53"}]
-        script_path = os.path.join(working_dir,"script.json")
-        save_dic_in_json(script, script_path)
-        os.system("python %s %s "%(PYPROCT, script_path))
+    script = copy.deepcopy(script_template)
+    working_dir = os.path.join("comparisons","campari_vs_profasi","%svs%s"%(A_traj_id,B_traj_id))
+    create_dir(working_dir)
+    script["global"]["workspace"]["base"] = working_dir
+    script["data"]["files"] = [{"file":A_traj,"base_selection":"resnum 3to53"},{"file": B_traj,"base_selection":"resnum 3to53"}]
+    script_path = os.path.join(working_dir,"script.json")
+    save_dic_in_json(script, script_path)
+    os.system("python %s %s "%(PYPROCT, script_path))
+
 
