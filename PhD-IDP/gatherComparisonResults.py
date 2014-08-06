@@ -1,8 +1,8 @@
-'''
+"""
 Created on 31/03/2014
 
 @author: victor
-'''
+"""
 
 import os
 from pyRMSD.condensedMatrix import CondensedMatrix
@@ -45,8 +45,8 @@ def process_campari_vs_profasi(campari, profasi):
 
 campari_folders = ["N_{:0>3d}_".format(i) for i in range(16)]
 profasi_folders = ["t{:0>2d}_fixed".format(i) for i in range(16)]
-process_matrix(campari_folders, "campari_matrix.png", "campari")
-process_matrix(profasi_folders, "profasi_matrix.png", "profasi")
+# process_matrix(campari_folders, "campari_matrix.png", "campari")
+# process_matrix(profasi_folders, "profasi_matrix.png", "profasi")
 process_campari_vs_profasi(campari_folders, profasi_folders)
 
 

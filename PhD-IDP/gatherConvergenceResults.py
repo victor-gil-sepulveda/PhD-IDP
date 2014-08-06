@@ -1,8 +1,8 @@
-'''
+"""
 Created on 23/04/2014
 
 @author: victor
-'''
+"""
 from tools import load_dic_in_json
 import os
 import matplotlib.pyplot as plt

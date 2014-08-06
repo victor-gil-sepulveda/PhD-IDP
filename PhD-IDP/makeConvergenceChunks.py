@@ -1,8 +1,8 @@
-'''
+"""
 Created on 22/04/2014
 
 @author: victor
-'''
+"""
 import os
 from tools import create_dir, save_dic_in_json
 import copy
